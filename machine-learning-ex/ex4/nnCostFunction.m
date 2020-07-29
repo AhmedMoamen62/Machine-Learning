@@ -62,21 +62,51 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+% X is 5000 sample * 400 feature
+% Theta1 is 25 unit in the hidden layer * 401 feature
+% Theta2 is 10 unit in the output layer * 26 input from the hidden layer
+
+a1 = [ones(m,1) X]; % 5000 * 401
+a2 = sigmoid(a1 * Theta1'); % 5000 * 401 by 401 * 25 = 5000 * 25
+
+a2 = [ones(m,1) a2]; % 5000 * 26
+% a3 = h_theta
+a3  = sigmoid(a2 * Theta2'); % 5000 * 26 by 26 * 10 = 5000 * 10
+
+y_new = zeros(m,num_labels); % 5000 * 10
+for i=1:m
+    y_new(i,y(i)) = 1;
+end
+
+J = (-1/m) * sum(sum((y_new .* log(a3) + (1 - y_new) .* log(1 - a3))));
 
 
+t1 = Theta1(:,2:end); % don't need theta1 zero (25 * 400)
+t2 = Theta2(:,2:end); % don't need theta2 zero (10 * 25)
 
+Reg = (lambda/(2*m)) * (sum(sum(t1.^2)) + sum(sum(t2.^2)));
 
+J = J + Reg;
 
+for t = 1:m
+    
+    a1_new = a1(t,:)'; % 401 * 1
+    a2_new = a2(t,:)'; % 26 * 1
+    a3_new = a3(t,:)'; % 10 * 1
+    
+    delta3 = a3_new - y_new(t,:)'; % 10 * 1 
+    delta2 = (Theta2' * delta3) .* [1; sigmoidGradient(Theta1 * a1_new)]; % 26  * 10 by 10 * 1 = 26 * 1
+    delta2 = delta2(2:end);
+    
+    Theta2_grad = Theta2_grad + delta3 * a2_new'; % 10 * 1 by 1 * 26 = 10 * 26
+    Theta1_grad = Theta1_grad + delta2 * a1_new'; % 25 * 1 by 1 * 401 = 25 * 401
+end
 
+Theta2_grad = (1/m) * Theta2_grad; % 10 * 26
+Theta1_grad = (1/m) * Theta1_grad; % 25 * 401
 
-
-
-
-
-
-
-
-
+Theta2_grad(:,2:end) = Theta2_grad(:,2:end) + (lambda/m) * Theta2(:,2:end);
+Theta1_grad(:,2:end) = Theta1_grad(:,2:end) + (lambda/m) * Theta1(:,2:end);
 
 
 
