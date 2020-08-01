@@ -12,10 +12,10 @@ figure; hold on;
 %               examples and 'ko' for the negative examples.
 %
 
-ypos = y(y >= 0);
-yneg = y(y < 0);
-xpos = X(y >= 0);
-xneg = X(y < 0);
+ypos = y(y >= 0.5);
+yneg = y(y < 0.5);
+xpos = X(y >= 0.5);
+xneg = X(y < 0.5);
 plot(xpos,ypos,'k+');
 plot(xneg,yneg,'ko');
 
