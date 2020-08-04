@@ -48,7 +48,13 @@ x = zeros(n, 1);
 %
 %
 
-
+for i = 1:n
+    if ~isempty(find(word_indices == i))
+        x(i) = 1;
+    else
+        x(i) = 0;
+    end
+end
 
 
 

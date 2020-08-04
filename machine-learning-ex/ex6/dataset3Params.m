@@ -23,8 +23,25 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+numbers_vec = [0.01 0.03 0.1 0.3 1 3 10 30];
+results = zeros(length(numbers_vec).^2,3); % for C , sigma and prediction error
 
 
+errorRow = 1; % counter to index the error row
+for c_test = numbers_vec
+    for sigma_test = numbers_vec
+        model = svmTrain(X, y, c_test, @(x1, x2) gaussianKernel(x1, x2, sigma_test));
+        predictions = svmPredict(model, Xval);
+        prediction_error = mean(double(predictions ~= yval));
+        results(errorRow,:) = [c_test sigma_test prediction_error];
+        errorRow = errorRow + 1;
+    end
+end
+
+[~, index_error_min] = min(results(:,3));
+
+C = results(index_error_min,1);
+sigma = results(index_error_min,2);
 
 
 
