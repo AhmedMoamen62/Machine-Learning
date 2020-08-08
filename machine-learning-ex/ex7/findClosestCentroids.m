@@ -22,10 +22,11 @@ idx = zeros(size(X,1), 1);
 %
 
 
-
-
-
-
+for i = 1:size(X,1)
+    diff_square = (X(i,:) - centroids).^2;
+    diff_sum = sum(diff_square,2);
+    [~, idx(i)] = min(diff_sum);
+end
 
 % =============================================================
 

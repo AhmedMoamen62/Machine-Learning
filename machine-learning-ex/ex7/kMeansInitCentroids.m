@@ -13,7 +13,9 @@ centroids = zeros(K, size(X, 2));
 %               the dataset X
 %
 
-
+m = size(X,1);
+rand_index = randperm(m); % generate numbers from 1 to m in random order
+centroids = X(rand_index(1:K),:); % get K examples from the data to initialize centroids
 
 
 
